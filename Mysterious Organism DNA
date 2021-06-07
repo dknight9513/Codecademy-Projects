@@ -1,0 +1,73 @@
+// Returns a random DNA base
+const returnRandBase = () => {
+  const dnaBases = ['A', 'T', 'C', 'G']
+  return dnaBases[Math.floor(Math.random() * 4)] 
+}
+
+// Returns a random single strand of DNA containing 15 bases
+const mockUpStrand = () => {
+  const newStrand = []
+  for (let i = 0; i < 15; i++) {
+    newStrand.push(returnRandBase())
+  }
+  return newStrand
+}
+
+//This is the "factory" function to create new pAequor organisms
+const pAequorFactory = (number, dnaArray) =>{
+  let pAequor ={
+    specimenNum : number,
+    dna : dnaArray,
+    //This method causes a random base of the organisms dna array to change into a random different base
+    mutate(){
+      let baseToChange = Math.floor(Math.random() *15);
+      let currBase = this.dna[baseToChange];
+      do{
+        this.dna[baseToChange] = returnRandBase();
+      } while (this.dna[baseToChange] === currBase);
+      return this.dna
+    },
+    //This method iterates through the DNA arrays of two different pAequors and then logs a statement detailing how much DNA they have in common
+    compareDNA(secondOrg){
+      let countMatch = 0;
+      for(let i = 0; i<this.dna.length; i++){
+        if(this.dna[i] === secondOrg.dna[i]){
+          countMatch++;
+        }
+      }
+      let percentMatch = Math.round((countMatch / this.dna.length) * 100);
+      if(!percentMatch){
+        percentMatch = 0;
+      }
+      console.log(`Specimen #${this.specimenNum} and specimen #${secondOrg.specimenNum} have ${percentMatch}% DNA in common.`);
+    },
+    //This method iterates through the DNA array of the organism and returns whether or not the pAequor is likely to survive given its DNA array
+    willLikelySurvive(){
+      let goodGeneCount = this.dna.filter(base =>{
+        return (base === 'C' || base === 'G')
+      }).length;
+      return Math.round(goodGeneCount / this.dna.length *100) >= 60;
+    }
+  }
+  return pAequor;
+}
+
+//Testing out a few of the methods that I created
+ex1 = pAequorFactory(1,mockUpStrand());
+ex2 = pAequorFactory(2,mockUpStrand());
+
+ex1.compareDNA(ex2);
+console.log(ex1.willLikelySurvive());
+console.log(ex2.willLikelySurvive());
+
+//This loop is designed to generate 30 examples of the pAequor organism that passes the test of the 'willLikelySurvive' method
+let pAequorArray = [];
+while (pAequorArray.length <30){
+  let newOrg = pAequorFactory((pAequorArray.length + 1), mockUpStrand());
+  if (newOrg.willLikelySurvive()){
+    pAequorArray.push(newOrg);
+  }
+}
+console.log(pAequorArray);
+
+
