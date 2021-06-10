@@ -1,0 +1,74 @@
+/*This program will randomly select a starter pokemon,
+and then randomly select a pokemon from the evolutionary
+families for it to evolve into. Probabilites will be set
+such that pokemon are more likely to evolve into their
+actual evolutions. Smaller chances will be set that allow
+the pokemon to evolve either into the wrong next stage
+evolution or skip all the way to their final evolution.
+Flavor text will be generated based on which of those
+situations occur. Additionally, a number of notable trainers
+from the series are randomly selected from to be included
+in the final output of the program
+*/
+
+let starters = ['Bulbasaur','Charmander','Squirtle','Totodile','Chikorita','Cyndaquil','Mudkip','Treecko','Torchic'];
+let seconds = ['Ivysaur','Charmeleon','Wartortle','Croconaw','Bayleef','Quilava','Marshtomp','Grovyle','Combusken'];
+let finals = ['Venasaur','Charizard','Blastoise','Feraligatr','Meganium','Typhlosion','Swampert','Sceptile','Blaziken'];
+let trainerNames = ['Your','Youngster Joey\'s','Ash Ketchum\'s','Gary Oak\'s','Red\'s','Giovanni\'s','Pokemon League Champion Steven\'s']
+
+//The below lines create our starting point by randomly
+//choosing a starter pokemon
+let starterIndex = Math.floor(Math.random()*starters.length);
+let starter = starters[starterIndex];
+let second = '';
+let final = '';
+
+//This decides if the pokemon will evolve into a pokemon from
+//its evolutionary line or from a different line
+if(Math.random() < .75){
+    //The pokemon follows its own evolutionary path
+    if(Math.random() < .8){
+        //The pokemon correctly evolves into its next form
+        second = seconds[starterIndex];
+    } else{
+        //The pokemon mutates to follow a random evolutionary path
+        let newIndex = 0;
+        do{
+            newIndex = Math.floor(Math.random()*starters.length);
+        } while (newIndex === starterIndex);
+        second = seconds[newIndex];
+    }
+} else{
+        //The pokemon skips an evolutionary stage and becomes
+        //its final form
+        final = finals[starterIndex];
+}
+
+let trainer = trainerNames[Math.floor(Math.random()*trainerNames.length)];
+let startText = '';
+let endText = '';
+let evolution = '';
+
+if(final){
+    //if a final stage pokemon was selected, the flavor text 
+    //reflects it and sets the evolution variable to equal final
+    startText = 'This is incredible!';
+    endText = 'just skipped a stage and ';
+    evolution = final;
+} else if(starterIndex === seconds.indexOf(second)){
+    //if the second stage pokemon is from the same evolutionary
+    //line as the starter, the flavor text makes minimal changes
+    // and the evolution is set to second
+    startText = 'Congratulations!';
+    evolution = second;
+} else{
+    //if the second is not from the same evolutionary line
+    //as the starter, we pick up different flavor text and 
+    //still set evolution to equal second
+    startText = 'I didn\'t even know this was possible!';
+    endText = 'mutated from its evolutionary line and ';
+    evolution = second;
+}
+
+//the program combines all of our variables to produce its output
+console.log(`${startText} ${trainer} ${starter} ${endText}evolved into a ${evolution}!`);
